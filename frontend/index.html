@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Movie Watchlist 🎬</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; background:#111; color:#eee; }
+    h1 { color:#ffcc00; }
+    .movie { border:1px solid #444; padding:1rem; margin:1rem 0; display:flex; align-items:center; border-radius:8px; background:#222; }
+    img { width:100px; height:150px; object-fit:cover; border-radius:6px; margin-right:1rem; }
+    button { margin-left:0.5rem; padding:0.4rem; border:none; border-radius:4px; cursor:pointer; }
+    .watched { color:#0f0; }
+    form input { margin-right:0.5rem; padding:0.4rem; }
+  </style>
+</head>
+<body>
+  <h1>🎬 My Movie Watchlist</h1>
+
+  <form onsubmit="addMovie(event)">
+    <input id="title" placeholder="Movie Title" required/>
+    <input id="genre" placeholder="Genre" required/>
+    <input id="image" placeholder="Image URL (optional)"/>
+    <button type="submit">Add Movie</button>
+  </form>
+
+  <div id="list"></div>
+
+<script>
+const API = "http://localhost:5000";
+
+async function load() {
+  const res = await fetch(API + "/movies");
+  const movies = await res.json();
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+  movies.forEach(m => {
+    const div = document.createElement("div");
+    div.className="movie";
+    div.innerHTML = `
+      <img src="${m.image_url || 'https://via.placeholder.com/100x150?text=No+Image'}" />
+      <div>
+        <h3>${m.title}</h3>
+        <p>${m.genre}</p>
+        <p class="${m.status ? 'watched' : ''}">${m.status ? 'Watched ✅' : 'Not Watched ❌'}</p>
+        <button onclick="markWatched(${m.id})">Mark as Watched</button>
+        <button onclick="del(${m.id})">Delete</button>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+async function addMovie(e) {
+  e.preventDefault();
+  const title=document.getElementById("title").value;
+  const genre=document.getElementById("genre").value;
+  const image=document.getElementById("image").value;
+  await fetch(API+"/movies",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({title,genre,image_url:image})
+  });
+  e.target.reset();
+  load();
+}
+
+async function markWatched(id){
+  await fetch(API+"/movies/"+id,{method:"PUT"});
+  load();
+}
+
+async function del(id){
+  await fetch(API+"/movies/"+id,{method:"DELETE"});
+  load();
+}
+
+load();
+</script>
+</body>
+</html>
