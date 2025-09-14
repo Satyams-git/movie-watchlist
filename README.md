@@ -1,9 +1,3 @@
-Bilkul — niche full, professional aur **DevOps-friendly README** diya hai jo ek DevOps engineer ko step-by-step batata hai ki is **Movie Watchlist App** ko kaise local se production tak deploy, harden, monitor aur maintain kare. Maine har command, best-practices, troubleshooting tips aur production notes include kiye hain.
-
-> Copy-paste kar ke `README.md` file me daal lo — main chaho toh isi content ko zip me add kar ke firse de sakta hoon.
-
----
-
 # Movie Watchlist — README (DevOps Deployment Guide)
 
 ## Table of Contents
@@ -409,3 +403,4 @@ If anything fails during deployment, gather:
 * `docker logs` of failing service(s)
 * `docker volume inspect` for volume info
 * Network connectivity checks (DNS resolution between containers)
+
